@@ -13,13 +13,22 @@ async def get_file(filename: str):
         return FileResponse(file_path)
     return {"error": "File not found"}, 404
 
-# ✅ Fixed function
 def start_bot():
     import asyncio
-    app = setup_bot()
+    from bot import setup_bot
+
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    loop.run_until_complete(app.run_polling())
 
-# Start bot in background
+    app = setup_bot()
+
+    async def run_bot():
+        await app.initialize()
+        await app.start()
+        await app.updater.start_polling()
+        await asyncio.Event().wait()
+
+    loop.run_until_complete(run_bot())
+
+# ✅ Start bot in background
 threading.Thread(target=start_bot).start()
