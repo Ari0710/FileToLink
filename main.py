@@ -6,7 +6,6 @@ import threading
 
 app = FastAPI()
 
-# Serve files via /files/<filename>
 @app.get("/files/{filename}")
 async def get_file(filename: str):
     file_path = os.path.join(UPLOAD_DIR, filename)
@@ -14,10 +13,13 @@ async def get_file(filename: str):
         return FileResponse(file_path)
     return {"error": "File not found"}, 404
 
-# Start Telegram bot in a separate thread
+# ✅ Fixed function
 def start_bot():
     import asyncio
     app = setup_bot()
-    asyncio.run(app.run_polling())
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(app.run_polling())
 
+# Start bot in background
 threading.Thread(target=start_bot).start()
