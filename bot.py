@@ -29,7 +29,7 @@ async def handle_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     file_path = os.path.join(UPLOAD_DIR, filename)
     await file.download_to_drive(file_path)
 
-    base_url = os.environ.get("BASE_URL", "http://localhost:8000")
+    base_url = os.environ.get("BASE_URL", "http://localhost:8080")
     download_url = f"{base_url}/files/{filename}"
     await update.message.reply_text(f"✅ File saved!\n📥 Download link: {download_url}")
 
